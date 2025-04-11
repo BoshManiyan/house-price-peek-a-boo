@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { DollarSign, TrendingUp, Home, Ruler, BedDouble, Bath } from 'lucide-react';
+import { DollarSign, TrendingUp, Home, Ruler, BedDouble, Bath, IndianRupee } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Currency } from '@/pages/Index';
 
 interface ResultDisplayProps {
   price: number | null;
@@ -12,17 +13,28 @@ interface ResultDisplayProps {
     location: string;
   };
   confidence: number;
+  currency: Currency;
 }
 
-const ResultDisplay = ({ price, features, confidence }: ResultDisplayProps) => {
+const ResultDisplay = ({ price, features, confidence, currency }: ResultDisplayProps) => {
   if (price === null) return null;
   
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(price);
+    if (currency === 'USD') {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+      }).format(price);
+    } else {
+      // Convert USD to INR (approximate exchange rate: 1 USD = 83 INR)
+      const inrPrice = price * 83;
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+      }).format(inrPrice);
+    }
   };
   
   const priceRange = {
@@ -30,11 +42,13 @@ const ResultDisplay = ({ price, features, confidence }: ResultDisplayProps) => {
     high: price * 1.05
   };
   
+  const CurrencyIcon = currency === 'USD' ? DollarSign : IndianRupee;
+  
   return (
     <div className="house-card p-6 animate-fade-in">
       <div className="mb-6">
         <h2 className="text-xl font-bold flex items-center mb-2">
-          <DollarSign className="mr-2 h-5 w-5 text-realestate-600" />
+          <CurrencyIcon className="mr-2 h-5 w-5 text-realestate-600" />
           Estimated Price
         </h2>
         <p className="text-sm text-muted-foreground">

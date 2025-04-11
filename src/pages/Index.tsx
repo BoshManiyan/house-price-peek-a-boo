@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Sparkles, TrendingUp, Search, Presentation, Cpu, Clock } from 'lucide-react';
-import { toast } from "@/components/ui/sonner";
+import { Sparkles, TrendingUp, Search, Presentation, Cpu, Clock, DollarSign, IndianRupee } from 'lucide-react';
+import { toast } from 'sonner';
 
 import Header from '@/components/Header';
 import PredictionForm from '@/components/PredictionForm';
@@ -10,6 +10,9 @@ import ResultDisplay from '@/components/ResultDisplay';
 import RecentPredictions from '@/components/RecentPredictions';
 import FeatureCard from '@/components/FeatureCard';
 import { predictHousePrice } from '@/lib/mockPredictionAPI';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+
+export type Currency = 'USD' | 'INR';
 
 interface FormData {
   bedrooms: number;
@@ -38,6 +41,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentFeatures, setCurrentFeatures] = useState<FormData | null>(null);
   const [recentPredictions, setRecentPredictions] = useState<Prediction[]>([]);
+  const [currency, setCurrency] = useState<Currency>('USD');
   
   const handlePredict = async (formData: FormData) => {
     setIsLoading(true);
@@ -87,6 +91,19 @@ const Index = () => {
             Get accurate house price estimates using our advanced machine learning model.
             Simply enter your house details and get an instant prediction.
           </p>
+          
+          <div className="mt-4 flex justify-center">
+            <ToggleGroup type="single" value={currency} onValueChange={(value) => value && setCurrency(value as Currency)}>
+              <ToggleGroupItem value="USD" aria-label="US Dollar" className="flex items-center px-3">
+                <DollarSign className="h-4 w-4 mr-2" />
+                <span>USD</span>
+              </ToggleGroupItem>
+              <ToggleGroupItem value="INR" aria-label="Indian Rupee" className="flex items-center px-3">
+                <IndianRupee className="h-4 w-4 mr-2" />
+                <span>INR</span>
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
         </section>
         
         <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
@@ -138,13 +155,14 @@ const Index = () => {
                     location: currentFeatures.location
                   }}
                   confidence={confidence}
+                  currency={currency}
                 />
               </div>
             )}
           </div>
           
           <div>
-            <RecentPredictions predictions={recentPredictions} />
+            <RecentPredictions predictions={recentPredictions} currency={currency} />
             
             {recentPredictions.length === 0 && (
               <div className="house-card p-6 h-full flex flex-col items-center justify-center text-center">

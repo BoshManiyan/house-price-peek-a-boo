@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { Clock, DollarSign, Home, MapPin, BedDouble, Bath } from 'lucide-react';
+import { Clock, DollarSign, Home, MapPin, BedDouble, Bath, IndianRupee } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Currency } from '@/pages/Index';
 
 interface Prediction {
   id: string;
@@ -15,22 +16,35 @@ interface Prediction {
 
 interface RecentPredictionsProps {
   predictions: Prediction[];
+  currency: Currency;
 }
 
-const RecentPredictions = ({ predictions }: RecentPredictionsProps) => {
+const RecentPredictions = ({ predictions, currency }: RecentPredictionsProps) => {
   if (predictions.length === 0) return null;
   
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(price);
+    if (currency === 'USD') {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+      }).format(price);
+    } else {
+      // Convert USD to INR (approximate exchange rate: 1 USD = 83 INR)
+      const inrPrice = price * 83;
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+      }).format(inrPrice);
+    }
   };
   
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
+
+  const CurrencyIcon = currency === 'USD' ? DollarSign : IndianRupee;
   
   return (
     <div className="house-card p-6 animate-fade-in">
@@ -49,7 +63,7 @@ const RecentPredictions = ({ predictions }: RecentPredictionsProps) => {
           <Card key={prediction.id} className="overflow-hidden">
             <div className="flex">
               <div className="bg-gradient-to-br from-realestate-400 to-realestate-600 text-white p-4 flex items-center justify-center">
-                <DollarSign className="h-6 w-6" />
+                <CurrencyIcon className="h-6 w-6" />
               </div>
               
               <div className="flex-1">
