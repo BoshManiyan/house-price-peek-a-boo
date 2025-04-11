@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Sparkles, TrendingUp, Search, Presentation, Cpu, Clock } from 'lucide-react';
@@ -66,7 +67,7 @@ const Index = () => {
       console.error("Prediction error:", error);
       toast("Error calculating price", {
         description: "There was a problem processing your request. Please try again.",
-        variant: "destructive"
+        style: { backgroundColor: "hsl(var(--destructive))", color: "hsl(var(--destructive-foreground))" }
       });
     } finally {
       setIsLoading(false);
