@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Sparkles, TrendingUp, Search, Presentation, Cpu } from 'lucide-react';
+import { Sparkles, TrendingUp, Search, Presentation, Cpu, Clock } from 'lucide-react';
 import { toast } from "@/components/ui/sonner";
 
 import Header from '@/components/Header';
@@ -48,7 +47,6 @@ const Index = () => {
       setConfidence(result.confidence);
       setCurrentFeatures(formData);
       
-      // Add to recent predictions
       const newPrediction: Prediction = {
         id: uuidv4(),
         price: result.price,
